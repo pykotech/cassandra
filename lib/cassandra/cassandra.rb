@@ -1005,6 +1005,11 @@ class Cassandra
     key_slices.inject(OrderedHash.new) {|h, key_slice| h[key_slice.key] = key_slice.columns; h }
   end
 
+  # Selecting a slice of a super column
+  def get_slice(column_family, key, start, finish, count, reversed, consistency)
+    _get_slice(column_family, key, start, finish, count, reversed, consistency)
+  end
+
   protected
 
   def calling_method

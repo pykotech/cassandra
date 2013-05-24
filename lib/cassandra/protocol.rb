@@ -133,5 +133,20 @@ class Cassandra
       end
       client.get_indexed_slices(column_parent, index_clause, predicate, consistency)
     end
+
+    def _get_slice(column_family, key, start, finish, count, reversed, consistency)
+      parent = CassandraThrift::ColumnParent.new(:column_family => column_family)
+      predicate = CassandraThrift::SlicePredicate.
+        new(:slice_range =>
+            CassandraThrift::SliceRange.new(:start => start,
+                                            :finish => finish,
+                                            :count => count,
+                                            :reversed => reversed))
+      {}.tap do |result|
+        client.get_slice(key, parent, predicate, consistency).each do |column|
+          result[column.counter_super_column.name] = _columns_to_hash(column.counter_super_column.columns)
+        end
+      end
+    end
   end
 end
