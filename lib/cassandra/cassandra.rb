@@ -1090,4 +1090,25 @@ class Cassandra
       @servers
     end
   end
+
+  public
+
+  # method required by ActiveRecord::ConnectionAdapters::ConnectionPool
+  def run_callbacks(method)
+  end
+
+  def verify!
+  end
+
+  def _run_checkin_callbacks
+    yield if block_given?
+  end
+
+  def requires_reloading?
+    true
+  end
+
+  def connected?
+    @client && @client.current_server
+  end
 end
